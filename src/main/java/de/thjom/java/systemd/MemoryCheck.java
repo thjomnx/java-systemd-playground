@@ -36,7 +36,7 @@ public class MemoryCheck {
                 Unit cronie = manager.getService("cronie");
                 cronie.addHandler(PropertiesChanged.class, s -> System.out.println(s));
 
-                System.out.println(cronie.hashCode());
+                System.out.println(System.identityHashCode(cronie));
             }
         }
         catch (DBusException e) {
