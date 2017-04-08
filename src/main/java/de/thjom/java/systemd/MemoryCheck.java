@@ -27,7 +27,7 @@ public class MemoryCheck {
             int i = 0;
 
             while (true) {
-                System.out.println(i++);
+                System.out.println("iteration: " + i++);
 
                 if (i % 50 == 0) {
                     System.gc();
@@ -36,7 +36,7 @@ public class MemoryCheck {
                 Unit cronie = manager.getService("cronie");
                 cronie.addHandler(PropertiesChanged.class, s -> System.out.println(s));
 
-                System.out.println(System.identityHashCode(cronie));
+                System.out.println("hash -> " + System.identityHashCode(cronie));
             }
         }
         catch (DBusException e) {
