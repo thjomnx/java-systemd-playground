@@ -442,12 +442,7 @@ public class Playground {
             e.printStackTrace();
         }
         finally {
-            try {
-                Systemd.disconnect();
-            }
-            catch (DBusException e) {
-                e.printStackTrace();
-            }
+            Systemd.disconnectAll();
         }
     }
 
