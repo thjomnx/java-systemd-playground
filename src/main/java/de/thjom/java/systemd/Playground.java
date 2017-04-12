@@ -68,7 +68,7 @@ public class Playground {
         System.out.println("DefaultStandardError: " + manager.getDefaultStandardError());
         System.out.println("DefaultStandardOutput: " + manager.getDefaultStandardOutput());
         System.out.println("DefaultStartLimitBurst: " + manager.getDefaultStartLimitBurst());
-        System.out.println("DefaultStartLimitInterval: " + manager.getDefaultStartLimitInterval());
+        System.out.println("DefaultStartLimitIntervalSec: " + manager.getDefaultStartLimitIntervalSec());
         System.out.println("DefaultTasksAccounting: " + manager.isDefaultTasksAccounting());
         System.out.println("DefaultTasksMax: " + manager.getDefaultTasksMax());
         System.out.println("DefaultTimeoutStartUSec: " + manager.getDefaultTimeoutStartUSec());
