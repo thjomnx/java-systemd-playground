@@ -231,7 +231,6 @@ public class Playground {
         System.out.println("Transient: " + cronie.isTransient());
         System.out.println("TriggeredBy: " + cronie.getTriggeredBy());
         System.out.println("Triggers: " + cronie.getTriggers());
-
         System.out.println("WantedBy: " + cronie.getWantedBy());
         System.out.println("Wants: " + cronie.getWants());
 
@@ -405,11 +404,25 @@ public class Playground {
         System.out.println("EnvironmentFiles: " + autofs.getEnvironmentFiles());
 
         System.out.println();
+
+        Swap foo = manager.getSwap("dev-disk-by\\x2duuid-2bf012d0\\x2d4abf\\x2d4405\\x2db314\\x2dfd62d3e94cc3");
+        System.out.println("'swap' properties (swap interface):");
+        System.out.println("IODeviceWeight: " + foo.getIODeviceWeight());
+        System.out.println("IOReadBandwidthMax: " + foo.getIOReadBandwidthMax());
+        System.out.println("IOReadIOPSMax: " + foo.getIOReadIOPSMax());
+        System.out.println("IOWriteBandwidthMax: " + foo.getIOWriteBandwidthMax());
+        System.out.println("IOWriteIOPSMax: " + foo.getIOWriteIOPSMax());
+
+        System.out.println();
+
+        System.out.println(cronie.getExecMainStartTimestamp());
+        System.out.println(cronie.getExecMainStartTimestampMonotonic());
+        System.out.println(cronie.getRuntimeMaxUSec());
     }
 
     public static void main(String[] args) {
         try {
-            Systemd systemd = Systemd.get(InstanceType.USER);
+            Systemd systemd = Systemd.get(InstanceType.SYSTEM);
 
 //            introspect(systemd.getManager());
             properties(systemd.getManager());
