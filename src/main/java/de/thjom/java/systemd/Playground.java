@@ -418,6 +418,10 @@ public class Playground {
         System.out.println(cronie.getExecMainStartTimestamp());
         System.out.println(cronie.getExecMainStartTimestampMonotonic());
         System.out.println(cronie.getRuntimeMaxUSec());
+
+        byte[] invocationId = cronie.getInvocationID();
+        System.out.println(Arrays.toString(invocationId) + "(" + invocationId.length + ")");
+        System.out.println(Systemd.id128ToString(invocationId));
     }
 
     public static void main(String[] args) {
