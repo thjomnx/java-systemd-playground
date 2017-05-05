@@ -18,4 +18,4 @@
  * @see <a href="https://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
  */
 
-package de.thjom.java.systemd;
+package de.thjom.java.systemd.apps;
