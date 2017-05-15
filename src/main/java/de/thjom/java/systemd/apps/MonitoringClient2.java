@@ -71,7 +71,7 @@ public class MonitoringClient2 implements Runnable {
                         Thread.sleep(60000);
                     }
                     catch (final InterruptedException e) {
-                        // Ignore (occurs on key press)
+                        Thread.currentThread().interrupt();
                     }
                 }
 

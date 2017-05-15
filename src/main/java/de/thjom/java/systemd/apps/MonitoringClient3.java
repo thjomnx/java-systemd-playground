@@ -12,20 +12,21 @@
 package de.thjom.java.systemd.apps;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Systemd;
-import de.thjom.java.systemd.Systemd.InstanceType;
 import de.thjom.java.systemd.Unit;
 import de.thjom.java.systemd.Unit.StateTuple;
+import de.thjom.java.systemd.UnitNameMonitor;
 
-public class MemoryCheck implements Runnable {
+public class MonitoringClient3 implements Runnable {
 
     private volatile boolean running;
 
-    public MemoryCheck() {
+    public MonitoringClient3() {
         this.running = true;
     }
 
@@ -33,23 +34,30 @@ public class MemoryCheck implements Runnable {
     public void run() {
         if (running) {
             try {
-                Manager manager = Systemd.get(InstanceType.USER).getManager();
+                Manager manager = Systemd.get().getManager();
 
-                System.out.println("Press key to stop check");
+                UnitNameMonitor nameMonitor = new UnitNameMonitor(manager);
+                nameMonitor.addUnits("cronie.service");
+                nameMonitor.addDefaultHandlers();
 
                 while (running) {
-                    String unitName = "foo.service";
-                    Unit foo = manager.getUnit(unitName);
+                    Optional<Unit> cronie = nameMonitor.getMonitoredUnit("cronie.service");
 
-                    System.out.format("%s:\t%s\n", unitName, StateTuple.of(foo));
+                    if (cronie.isPresent()) {
+                        System.out.format("%s: %s\n", cronie.get(), StateTuple.of(cronie.get()));
+                    }
+
+                    System.out.println("Press key to stop polling");
 
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(10000);
                     }
                     catch (final InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 }
+
+                nameMonitor.removeDefaultHandlers();
             }
             catch (final DBusException e) {
                 e.printStackTrace();
@@ -61,7 +69,7 @@ public class MemoryCheck implements Runnable {
     }
 
     public static void main(final String[] args) {
-        MemoryCheck client = new MemoryCheck();
+        MonitoringClient3 client = new MonitoringClient3();
 
         Thread t = new Thread(client);
         t.start();

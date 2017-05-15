@@ -23,9 +23,9 @@ import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Service;
 import de.thjom.java.systemd.Systemd;
 import de.thjom.java.systemd.Unit;
+import de.thjom.java.systemd.Unit.StateTuple;
 import de.thjom.java.systemd.UnitNameMonitor;
 import de.thjom.java.systemd.UnitTypeMonitor;
-import de.thjom.java.systemd.Unit.StateTuple;
 import de.thjom.java.systemd.UnitTypeMonitor.MonitoredType;
 
 public class MonitoringClient implements Runnable {
@@ -53,7 +53,7 @@ public class MonitoringClient implements Runnable {
                     System.out.println("MonitoringClient.run().cronie.addConsumer().handler(): " + s);
                 });
 
-                cronie.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.from(u, p)));
+                cronie.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 // Unit monitoring based on names
                 UnitNameMonitor miscMonitor = new UnitNameMonitor(manager);
@@ -73,7 +73,7 @@ public class MonitoringClient implements Runnable {
                     }
                 });
 
-                miscMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.from(u, p)));
+                miscMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 // Unit monitoring based on types
                 UnitTypeMonitor serviceMonitor = new UnitTypeMonitor(manager);
@@ -92,7 +92,7 @@ public class MonitoringClient implements Runnable {
                     }
                 });
 
-                serviceMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.from(u, p)));
+                serviceMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 while (running) {
                     List<Unit> units = new ArrayList<>();
@@ -132,7 +132,7 @@ public class MonitoringClient implements Runnable {
                         Thread.sleep(60000);
                     }
                     catch (final InterruptedException e) {
-                        // Ignore (occurs on key press)
+                        Thread.currentThread().interrupt();
                     }
                 }
 
