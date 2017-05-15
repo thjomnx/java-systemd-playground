@@ -20,9 +20,8 @@ import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Service;
 import de.thjom.java.systemd.Swap;
 import de.thjom.java.systemd.Systemd;
-import de.thjom.java.systemd.Target;
-import de.thjom.java.systemd.Manager.Property;
 import de.thjom.java.systemd.Systemd.InstanceType;
+import de.thjom.java.systemd.Target;
 
 public class Playground {
 
