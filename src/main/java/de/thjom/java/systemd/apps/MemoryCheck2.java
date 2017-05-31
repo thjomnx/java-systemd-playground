@@ -20,12 +20,13 @@ import de.thjom.java.systemd.Systemd;
 import de.thjom.java.systemd.Systemd.InstanceType;
 import de.thjom.java.systemd.Unit;
 import de.thjom.java.systemd.Unit.StateTuple;
+import de.thjom.java.systemd.UnitNameMonitor;
 
-public class MemoryCheck implements Runnable {
+public class MemoryCheck2 implements Runnable {
 
     private volatile boolean running;
 
-    public MemoryCheck() {
+    public MemoryCheck2() {
         this.running = true;
     }
 
@@ -35,13 +36,20 @@ public class MemoryCheck implements Runnable {
             try {
                 Manager manager = Systemd.get(InstanceType.SYSTEM).getManager();
 
+                Unit postfix = manager.getUnit("postfix.service");
+
+                UnitNameMonitor miscMonitor = new UnitNameMonitor(manager);
+                miscMonitor.addUnits(postfix);
+                miscMonitor.addUnits("avahi-daemon.service");
+                miscMonitor.addUnits("foo.service");    // This one shall pop in and out
+                miscMonitor.addDefaultHandlers();
+
                 System.out.println("Press key to stop check");
 
                 while (running) {
-                    String unitName = "postfix.service";
-                    Unit postfix = manager.getUnit(unitName);
-
-                    System.out.format("%s:\t%s\n", unitName, StateTuple.of(postfix));
+                    for (Unit unit : miscMonitor.getMonitoredUnits()) {
+                        System.out.format("%s:\t%s\n", unit.getId(), StateTuple.of(unit));
+                    }
 
                     try {
                         Thread.sleep(50);
@@ -61,7 +69,7 @@ public class MemoryCheck implements Runnable {
     }
 
     public static void main(final String[] args) {
-        MemoryCheck client = new MemoryCheck();
+        MemoryCheck2 client = new MemoryCheck2();
 
         Thread t = new Thread(client);
         t.start();
