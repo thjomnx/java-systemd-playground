@@ -40,8 +40,9 @@ public class MemoryCheck2 implements Runnable {
 
                 UnitNameMonitor miscMonitor = new UnitNameMonitor(manager);
                 miscMonitor.addUnits(postfix);
-                miscMonitor.addUnits("avahi-daemon.service");
-                miscMonitor.addUnits("foo.service");    // This one shall pop in and out
+                miscMonitor.addUnits("avahi-daemon.service");   // This one is loaded and running by default (enabled)
+                miscMonitor.addUnits("foo.service");            // This one is loaded by default but not running (disabled)
+                miscMonitor.addUnits("transient.service");      // This one shall pop in and out (not existing)
                 miscMonitor.addDefaultHandlers();
 
                 System.out.println("Press key to stop check");
@@ -52,7 +53,7 @@ public class MemoryCheck2 implements Runnable {
                     }
 
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(1000);
                     }
                     catch (final InterruptedException e) {
                         Thread.currentThread().interrupt();
