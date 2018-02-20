@@ -17,14 +17,22 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.freedesktop.dbus.DBusInterface;
+
+import de.thjom.java.systemd.InterfaceAdapter;
+import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Signal;
+import de.thjom.java.systemd.Unit;
 
 public class CoverageAnalyzer {
 
     public static void analyzePath(final String service, final String object, final String iface) throws ReflectiveOperationException, IOException {
-        File outFile = new File("/home/menax/Temp/java-systemd/coverage-analysis/java/" + iface + ".dump");
+        File outFile = new File(System.getProperty("user.home") + "/Temp/java-systemd/coverage-analysis/java/" + iface + ".dump") ;
+        outFile.getParentFile().mkdirs();
+
         Process busctl = new ProcessBuilder("/usr/bin/busctl", "introspect", service, object, iface).redirectOutput(outFile).start();
 
         try {
@@ -34,7 +42,13 @@ public class CoverageAnalyzer {
             Thread.currentThread().interrupt();
         }
 
-        List<String> results = new ArrayList<>();
+        // Find misses
+        List<String> misses = new ArrayList<>();
+
+        // Remember each one for later search for obsoletes
+        List<String> methodNames = new ArrayList<>();
+        List<String> propertyNames = new ArrayList<>();
+        List<String> signalNames = new ArrayList<>();
 
         for (String line : Files.readAllLines(outFile.toPath())) {
             String[] token = line.replaceAll("\\s+", " ").split(" ");
@@ -44,22 +58,57 @@ public class CoverageAnalyzer {
 
             if (varType.equals("method")) {
                 if (!findMethod(varName, iface)) {
-                    results.add(line);
+                    misses.add(line);
                 }
+
+                methodNames.add(varName.toLowerCase());
             }
             else if (varType.equals("property")) {
                 if (!findProperty(varName, iface)) {
-                    results.add(line);
+                    misses.add(line);
                 }
+
+                propertyNames.add(varName);
             }
             else if (varType.equals("signal")) {
                 if (!findSignal(varName, iface)) {
-                    results.add(line);
+                    misses.add(line);
                 }
+
+                signalNames.add(varName);
             }
         }
 
-        Files.write(outFile.toPath().getParent().resolve(iface + ".miss"), results, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(outFile.toPath().getParent().resolve(iface + ".miss"), misses, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        // Find obsoletes
+        List<String> obsoletes = new ArrayList<>();
+
+        for (Method method : findMethods(iface)) {
+            if (!methodNames.contains(method.getName().toLowerCase())) {
+                obsoletes.add(method.toString());
+            }
+        }
+
+        for (Method property : findProperties(iface)) {
+            String propertyName = property.getName();
+            propertyName = propertyName.replaceFirst("^is", "");
+            propertyName = propertyName.replaceFirst("^get", "");
+
+            if (!propertyNames.contains(propertyName)) {
+                obsoletes.add(property.toString());
+            }
+        }
+
+        for (Class<?> signal : findSignals(iface)) {
+            String signalName = signal.getSimpleName();
+
+            if (!signalNames.contains(signalName)) {
+                obsoletes.add(signal.toString());
+            }
+        }
+
+        Files.write(outFile.toPath().getParent().resolve(iface + ".obso"), obsoletes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     public static boolean findMethod(final String name, final String iface) throws ReflectiveOperationException {
@@ -75,6 +124,13 @@ public class CoverageAnalyzer {
         return false;
     }
 
+    public static List<Method> findMethods(final String iface) throws ReflectiveOperationException {
+        String interfaceName = "de.thjom.java.systemd.interfaces" + iface.substring(iface.lastIndexOf('.')) + "Interface";
+        Class<?> cls = Class.forName(interfaceName);
+
+        return Arrays.asList(cls.getDeclaredMethods());
+    }
+
     public static boolean findProperty(final String name, final String iface) throws ReflectiveOperationException {
         String className = "de.thjom.java.systemd" + iface.substring(iface.lastIndexOf('.'));
         Class<?> cls = Class.forName(className);
@@ -88,6 +144,56 @@ public class CoverageAnalyzer {
         return false;
     }
 
+    public static List<Method> findProperties(final String iface) throws ReflectiveOperationException {
+        String className = "de.thjom.java.systemd" + iface.substring(iface.lastIndexOf('.'));
+        Class<?> cls = Class.forName(className);
+
+        List<Method> methods = new ArrayList<>();
+
+        for (Method method : cls.getMethods()) {
+            if (method.getName().startsWith("is") || method.getName().startsWith("get")) {
+                boolean skip = false;
+
+                skip |= method.getDeclaringClass().equals(Object.class);
+                skip |= method.getDeclaringClass().equals(InterfaceAdapter.class);
+                skip |= method.getName().equals("getInterface");
+                skip |= method.getDeclaringClass().equals(DBusInterface.class);
+                skip |= method.getName().equals("getUnitProperties");
+
+                if (method.getDeclaringClass().equals(Manager.class) ) {
+                    skip |= method.getName().equals("getDefaultTarget");
+                    skip |= method.getName().equals("getAutomount");
+                    skip |= method.getName().equals("getBusName");
+                    skip |= method.getName().equals("getDevice");
+                    skip |= method.getName().equals("getMount");
+                    skip |= method.getName().equals("getPath");
+                    skip |= method.getName().equals("getScope");
+                    skip |= method.getName().equals("getService");
+                    skip |= method.getName().equals("getSlice");
+                    skip |= method.getName().equals("getSnapshot");
+                    skip |= method.getName().equals("getSocket");
+                    skip |= method.getName().equals("getSwap");
+                    skip |= method.getName().equals("getTarget");
+                    skip |= method.getName().equals("getTimer");
+                    skip |= method.getName().equals("getUnit");
+                }
+
+                if (!iface.equals("org.freedesktop.systemd1.Unit")) {
+                    skip |= method.getDeclaringClass().equals(Unit.class);
+                }
+                else {
+                    skip |= method.getName().equals("isAssignableFrom");
+                }
+
+                if (!skip) {
+                    methods.add(method);
+                }
+            }
+        }
+
+        return methods;
+    }
+
     public static boolean findSignal(final String name, final String iface) throws ReflectiveOperationException {
         String className = "de.thjom.java.systemd.interfaces" + iface.substring(iface.lastIndexOf('.')) + "Interface";
         Class<?> cls = Class.forName(className);
@@ -99,6 +205,13 @@ public class CoverageAnalyzer {
         }
 
         return false;
+    }
+
+    public static List<Class<?>> findSignals(final String iface) throws ReflectiveOperationException {
+        String className = "de.thjom.java.systemd.interfaces" + iface.substring(iface.lastIndexOf('.')) + "Interface";
+        Class<?> cls = Class.forName(className);
+
+        return Arrays.asList(cls.getDeclaredClasses());
     }
 
     public static void main(final String[] args) {
