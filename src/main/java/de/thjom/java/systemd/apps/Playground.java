@@ -74,7 +74,7 @@ public class Playground {
         System.out.println("DefaultStandardError: " + manager.getDefaultStandardError());
         System.out.println("DefaultStandardOutput: " + manager.getDefaultStandardOutput());
         System.out.println("DefaultStartLimitBurst: " + manager.getDefaultStartLimitBurst());
-        System.out.println("DefaultStartLimitIntervalSec: " + manager.getDefaultStartLimitIntervalSec());
+        System.out.println("DefaultStartLimitIntervalSec: " + manager.getDefaultStartLimitIntervalUSec());
         System.out.println("DefaultTasksAccounting: " + manager.isDefaultTasksAccounting());
         System.out.println("DefaultTasksMax: " + manager.getDefaultTasksMax());
         System.out.println("DefaultTimeoutStartUSec: " + manager.getDefaultTimeoutStartUSec());
@@ -258,7 +258,6 @@ public class Playground {
         System.out.println("CPUSchedulingResetOnFork: " + cronie.isCPUSchedulingResetOnFork());
         System.out.println("CPUShares: " + cronie.getCPUShares());
         System.out.println("CPUUsageNSec: " + cronie.getCPUUsageNSec());
-        System.out.println("Capabilities: " + cronie.getCapabilities());
         System.out.println("CapabilityBoundingSet: " + cronie.getCapabilityBoundingSet());
         System.out.println("ControlGroup: " + cronie.getControlGroup());
         System.out.println("ControlPID: " + cronie.getControlPID());
@@ -284,9 +283,8 @@ public class Playground {
         System.out.println("FileDescriptorStoreMax: " + cronie.getFileDescriptorStoreMax());
         System.out.println("Group: " + cronie.getGroup());
         System.out.println("GuessMainPID: " + cronie.isGuessMainPID());
-        System.out.println("IOScheduling: " + cronie.getIOScheduling());
         System.out.println("IgnoreSIGPIPE: " + cronie.isIgnoreSIGPIPE());
-        System.out.println("InaccessibleDirectories: " + cronie.getInaccessibleDirectories());
+        System.out.println("InaccessiblePaths: " + cronie.getInaccessiblePaths());
         System.out.println("KillMode: " + cronie.getKillMode());
         System.out.println("KillSignal: " + cronie.getKillSignal());
         System.out.println("LimitAS: " + cronie.getLimitAS());
@@ -326,8 +324,8 @@ public class Playground {
         System.out.println("PrivateTmp: " + cronie.isPrivateTmp());
         System.out.println("ProtectHome: " + cronie.getProtectHome());
         System.out.println("ProtectSystem: " + cronie.getProtectSystem());
-        System.out.println("ReadOnlyDirectories: " + cronie.getReadOnlyDirectories());
-        System.out.println("ReadWriteDirectories: " + cronie.getReadWriteDirectories());
+        System.out.println("ReadOnlyDirectories: " + cronie.getReadOnlyPaths());
+        System.out.println("ReadWriteDirectories: " + cronie.getReadWritePaths());
         System.out.println("RebootArgument: " + cronie.getRebootArgument());
         System.out.println("RemainAfterExit: " + cronie.isRemainAfterExit());
         System.out.println("Restart: " + cronie.getRestart());
@@ -350,7 +348,6 @@ public class Playground {
         System.out.println("StandardOutput: " + cronie.getStandardOutput());
         System.out.println("StartLimitAction: " + cronie.getStartLimitAction());
         System.out.println("StartLimitBurst: " + cronie.getStartLimitBurst());
-        System.out.println("StartLimitInterval: " + cronie.getStartLimitInterval());
         System.out.println("StartupBlockIOWeight: " + cronie.getStartupBlockIOWeight());
         System.out.println("StartupCPUShares: " + cronie.getStartupCPUShares());
         System.out.println("StatusErrno: " + cronie.getStatusErrno());
@@ -430,13 +427,24 @@ public class Playground {
         System.out.println(Systemd.id128ToString(invocationId));
     }
 
-    public static void main(String[] args) {
+    public static void ipacc(final Manager manager) throws DBusException  {
+        Service ipaccountingtest = manager.getService("ipaccountingtest");
+        System.out.println("'ipaccountingtest' properties (ip-accounting interface):");
+        System.out.println("MainPID: " + ipaccountingtest.getMainPID());
+        System.out.println("IPAccounting: " + ipaccountingtest.isIPAccounting());
+        System.out.println("IPAddressAllow: " + ipaccountingtest.getIPAddressAllow());
+        System.out.println("IPAddressDeny: " + ipaccountingtest.getIPAddressDeny());
+    }
+
+    public static void main(final String[] args) {
         try {
             Systemd systemd = Systemd.get(InstanceType.SYSTEM);
 
 //            introspect(systemd.getManager());
-            properties(systemd.getManager());
-            methods(systemd.getManager());
+//            properties(systemd.getManager());
+//            methods(systemd.getManager());
+            ipacc(systemd.getManager());
+
 
 //            for (UnitType ut : systemd.getManager().listUnits()) {
 //                Unit unit = systemd.getManager().getUnit(ut.getUnitName());
