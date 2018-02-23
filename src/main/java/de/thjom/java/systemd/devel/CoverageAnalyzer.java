@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +80,14 @@ public class CoverageAnalyzer {
             }
         }
 
-        Files.write(outFile.toPath().getParent().resolve(iface + ".miss"), misses, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Path missFile = outFile.toPath().getParent().resolve(iface + ".miss");
+
+        if (!misses.isEmpty()) {
+            Files.write(missFile, misses, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        else {
+            Files.deleteIfExists(missFile);
+        }
 
         // Find obsoletes
         List<String> obsoletes = new ArrayList<>();
@@ -108,7 +116,14 @@ public class CoverageAnalyzer {
             }
         }
 
-        Files.write(outFile.toPath().getParent().resolve(iface + ".obso"), obsoletes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Path obsoFile = outFile.toPath().getParent().resolve(iface + ".obso");
+
+        if (!obsoletes.isEmpty()) {
+            Files.write(obsoFile, obsoletes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        else {
+            Files.deleteIfExists(obsoFile);
+        }
     }
 
     public static boolean findMethod(final String name, final String iface) throws ReflectiveOperationException {
