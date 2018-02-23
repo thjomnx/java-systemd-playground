@@ -388,6 +388,8 @@ public class Playground {
 //        System.out.println("Start: " + cronie.start(Mode.FAIL));
 //        System.out.println("Stop: " + cronie.stop(Mode.FAIL));
 
+//        System.out.println("GetProcesses: " + cronie.getProcesses());
+
         System.out.println();
 
         Target basic = manager.getTarget("basic");
@@ -442,8 +444,8 @@ public class Playground {
 
 //            introspect(systemd.getManager());
 //            properties(systemd.getManager());
-//            methods(systemd.getManager());
-            ipacc(systemd.getManager());
+            methods(systemd.getManager());
+//            ipacc(systemd.getManager());
 
 
 //            for (UnitType ut : systemd.getManager().listUnits()) {
