@@ -388,8 +388,6 @@ public class Playground {
 //        System.out.println("Start: " + cronie.start(Mode.FAIL));
 //        System.out.println("Stop: " + cronie.stop(Mode.FAIL));
 
-//        System.out.println("GetProcesses: " + cronie.getProcesses());
-
         System.out.println();
 
         Target basic = manager.getTarget("basic");
@@ -427,6 +425,14 @@ public class Playground {
         byte[] invocationId = cronie.getInvocationID();
         System.out.println(Arrays.toString(invocationId) + "(" + invocationId.length + ")");
         System.out.println(Systemd.id128ToString(invocationId));
+
+        System.out.println();
+
+        System.out.println("'postgresql' methods (service interface, work only with privileges):");
+
+//        Service psql = manager.getService("postgresql");
+//        System.out.println("GetProcesses: ");
+//        psql.getProcesses().forEach(up -> System.out.print(up.getSummary()));
     }
 
     public static void ipacc(final Manager manager) throws DBusException  {
