@@ -99,12 +99,14 @@ public class CoverageAnalyzer {
         }
 
         for (Method property : findProperties(iface)) {
-            String propertyName = property.getName();
-            propertyName = propertyName.replaceFirst("^is", "");
-            propertyName = propertyName.replaceFirst("^get", "");
+            if (!methodNames.contains(property.getName().toLowerCase())) {
+                String propertyName = property.getName();
+                propertyName = propertyName.replaceFirst("^is", "");
+                propertyName = propertyName.replaceFirst("^get", "");
 
-            if (!propertyNames.contains(propertyName)) {
-                obsoletes.add(property.toString());
+                if (!propertyNames.contains(propertyName)) {
+                    obsoletes.add(property.toString());
+                }
             }
         }
 
