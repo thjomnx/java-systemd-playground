@@ -433,6 +433,12 @@ public class Playground {
 //        Service psql = manager.getService("postgresql");
 //        System.out.println("GetProcesses: ");
 //        psql.getProcesses().forEach(up -> System.out.print(up.getSummary()));
+
+        System.out.println();
+
+        Service jst = manager.getService("java-systemd-test");
+        System.out.println("LogExtraFields: " + jst.getLogExtraFields());
+        System.out.println("SuccessExitStatus: " + jst.getSuccessExitStatus());
     }
 
     public static void ipacc(final Manager manager) throws DBusException  {
