@@ -317,7 +317,6 @@ public class Playground {
         System.out.println("PAMName: " + cronie.getPAMName());
         System.out.println("PIDFile: " + cronie.getPIDFile());
         System.out.println("PassEnvironment: " + cronie.getPassEnvironment());
-        System.out.println("PermissionsStartOnly: " + cronie.isPermissionsStartOnly());
         System.out.println("Personality: " + cronie.getPersonality());
         System.out.println("PrivateDevices: " + cronie.isPrivateDevices());
         System.out.println("PrivateNetwork: " + cronie.isPrivateNetwork());
@@ -439,6 +438,13 @@ public class Playground {
         Service jst = manager.getService("java-systemd-test");
         System.out.println("LogExtraFields: " + jst.getLogExtraFields());
         System.out.println("SuccessExitStatus: " + jst.getSuccessExitStatus());
+
+        System.out.println();
+
+        System.out.println("'Manager' methods:");
+        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", false));
+        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", true));
+        System.out.println("GetUnitFileState: " + manager.getUnitFileState("cronie.service"));
     }
 
     public static void ipacc(final Manager manager) throws DBusException  {
