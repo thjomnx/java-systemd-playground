@@ -91,9 +91,9 @@ public class Playground {
         System.out.println("GeneratorsFinishTimestampMonotonic: " + manager.getGeneratorsFinishTimestampMonotonic());
         System.out.println("GeneratorsStartTimestamp: " + manager.getGeneratorsStartTimestamp());
         System.out.println("GeneratorsStartTimestampMonotonic: " + manager.getGeneratorsStartTimestampMonotonic());
-        System.out.println("InitRDTimestamp: " + manager.getInitRDTimestamp() + " (" + Systemd.timestampToDate(manager.getInitRDTimestamp()) + ")");
+        System.out.println("InitRDTimestamp: " + manager.getInitRDTimestamp() + " (" + Systemd.timestampToInstant(manager.getInitRDTimestamp()) + ")");
         System.out.println("InitRDTimestampMonotonic: " + manager.getInitRDTimestampMonotonic());
-        System.out.println("KernelTimestamp: " + manager.getKernelTimestamp() + " (" + Systemd.timestampToDate(manager.getKernelTimestamp()) + ")");
+        System.out.println("KernelTimestamp: " + manager.getKernelTimestamp() + " (" + Systemd.timestampToInstant(manager.getKernelTimestamp()) + ")");
         System.out.println("KernelTimestampMonotonic: " + manager.getKernelTimestampMonotonic());
         System.out.println("LoaderTimestamp: " + manager.getLoaderTimestamp());
         System.out.println("LoaderTimestampMonotonic: " + manager.getLoaderTimestampMonotonic());
@@ -106,9 +106,9 @@ public class Playground {
         System.out.println("NNames: " + manager.getNNames());
         System.out.println("Progress: " + manager.getProgress());
         System.out.println("RuntimeWatchdogUSec: " + manager.getRuntimeWatchdogUSec());
-        System.out.println("SecurityFinishTimestamp: " + manager.getSecurityFinishTimestamp() + " (" + Systemd.timestampToDate(manager.getSecurityFinishTimestamp()) + ")");
+        System.out.println("SecurityFinishTimestamp: " + manager.getSecurityFinishTimestamp() + " (" + Systemd.timestampToInstant(manager.getSecurityFinishTimestamp()) + ")");
         System.out.println("SecurityFinishTimestampMonotonic: " + manager.getSecurityFinishTimestampMonotonic());
-        System.out.println("SecurityStartTimestamp: " + manager.getSecurityStartTimestamp() + " (" + Systemd.timestampToDate(manager.getSecurityStartTimestamp()) + ")");
+        System.out.println("SecurityStartTimestamp: " + manager.getSecurityStartTimestamp() + " (" + Systemd.timestampToInstant(manager.getSecurityStartTimestamp()) + ")");
         System.out.println("SecurityStartTimestampMonotonic: " + manager.getSecurityStartTimestampMonotonic());
         System.out.println("ShowStatus: " + manager.isShowStatus());
         System.out.println("SystemState: " + manager.getSystemState());
@@ -119,7 +119,7 @@ public class Playground {
         System.out.println("UnitsLoadFinishTimestampMonotonic: " + manager.getUnitsLoadFinishTimestampMonotonic());
         System.out.println("UnitsLoadStartTimestamp: " + manager.getUnitsLoadStartTimestamp());
         System.out.println("UnitsLoadStartTimestampMonotonic: " + manager.getUnitsLoadStartTimestampMonotonic());
-        System.out.println("UserspaceTimestamp: " + manager.getUserspaceTimestamp() + " (" + Systemd.timestampToDate(manager.getUserspaceTimestamp()) + ")");
+        System.out.println("UserspaceTimestamp: " + manager.getUserspaceTimestamp() + " (" + Systemd.timestampToInstant(manager.getUserspaceTimestamp()) + ")");
         System.out.println("UserspaceTimestampMonotonic: " + manager.getUserspaceTimestampMonotonic());
         System.out.println("Version: " + manager.getVersion());
         System.out.println("Virtualization: " + manager.getVirtualization());
@@ -168,6 +168,9 @@ public class Playground {
         System.out.println("Environment: " + polkit.getEnvironment());
         System.out.println("MainPID: " + polkit.getMainPID());
         System.out.println("Type: " + polkit.getType());
+        System.out.println("AllowedCPUs: " + Arrays.toString(polkit.getAllowedCPUs()));
+        System.out.println("NUMAMask: " + Arrays.toString(polkit.getNUMAMask()));
+        System.out.println("LoadCredentials: " + polkit.getLoadCredential());
 
         System.out.println();
 
@@ -439,12 +442,12 @@ public class Playground {
         System.out.println("LogExtraFields: " + jst.getLogExtraFields());
         System.out.println("SuccessExitStatus: " + jst.getSuccessExitStatus());
 
-        System.out.println();
-
-        System.out.println("'Manager' methods:");
-        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", false));
-        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", true));
-        System.out.println("GetUnitFileState: " + manager.getUnitFileState("cronie.service"));
+//        System.out.println();
+//
+//        System.out.println("'Manager' methods:");
+//        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", false));
+//        System.out.println("GetUnitFileLinks: " + manager.getUnitFileLinks("cronie.service", true));
+//        System.out.println("GetUnitFileState: " + manager.getUnitFileState("cronie.service"));
     }
 
     public static void ipacc(final Manager manager) throws DBusException  {

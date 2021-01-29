@@ -11,7 +11,7 @@
 
 package de.thjom.java.systemd.apps;
 
-import org.freedesktop.dbus.DBusConnection;
+import org.freedesktop.dbus.connections.impl.DBusConnection;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 public class ConnectionDebugger {
@@ -21,7 +21,7 @@ public class ConnectionDebugger {
             int i = 0;
 
             while (true) {
-                DBusConnection conn = DBusConnection.getConnection(DBusConnection.SYSTEM);
+                DBusConnection conn = DBusConnection.getConnection(DBusConnection.DBusBusType.SYSTEM);
 
                 System.out.format("ConnectionDebugger.main() - %d - conn=%s\n", i++, conn);
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.freedesktop.dbus.DBusInterface;
+import org.freedesktop.dbus.interfaces.DBusInterface;
 
 import de.thjom.java.systemd.InterfaceAdapter;
 import de.thjom.java.systemd.Manager;
