@@ -16,13 +16,19 @@ import java.util.List;
 
 import org.freedesktop.dbus.exceptions.DBusException;
 
+import de.thjom.java.systemd.Automount;
 import de.thjom.java.systemd.Device;
 import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Mount;
+import de.thjom.java.systemd.Path;
+import de.thjom.java.systemd.Scope;
 import de.thjom.java.systemd.Service;
+import de.thjom.java.systemd.Slice;
+import de.thjom.java.systemd.Socket;
 import de.thjom.java.systemd.Swap;
 import de.thjom.java.systemd.Systemd;
 import de.thjom.java.systemd.Target;
+import de.thjom.java.systemd.Timer;
 
 public class IntegrationTestSuite {
 
@@ -36,7 +42,6 @@ public class IntegrationTestSuite {
                 "getScope",
                 "getService",
                 "getSlice",
-                "getSnapshot",
                 "getSocket",
                 "getSwap",
                 "getTarget",
@@ -94,11 +99,17 @@ public class IntegrationTestSuite {
 
             testManager(manager, Manager.class);
 
-            testUnit(manager.getDevice("dev-sda1"), Device.class);
+            testUnit(manager.getAutomount("proc-sys-fs-binfmt_misc"), Automount.class);
+            testUnit(manager.getDevice("sys-module-configfs"), Device.class);
             testUnit(manager.getMount("tmp"), Mount.class);
-            testUnit(manager.getService("cronie"), Service.class);
+            testUnit(manager.getPath("systemd-ask-password-console"), Path.class);
+            testUnit(manager.getScope("init"), Scope.class);
+            testUnit(manager.getService("dbus"), Service.class);
+            testUnit(manager.getSlice("system"), Slice.class);
+            testUnit(manager.getSocket("dbus"), Socket.class);
             testUnit(manager.getSwap("dev-disk-by\\x2duuid-2bf012d0\\x2d4abf\\x2d4405\\x2db314\\x2dfd62d3e94cc3"), Swap.class);
             testUnit(manager.getTarget("basic"), Target.class);
+            testUnit(manager.getTimer("systemd-tmpfiles-clean"), Timer.class);
         }
         catch (final DBusException | ReflectiveOperationException e) {
             e.printStackTrace();

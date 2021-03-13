@@ -187,7 +187,6 @@ public class CoverageAnalyzer {
                     skip |= method.getName().equals("getScope");
                     skip |= method.getName().equals("getService");
                     skip |= method.getName().equals("getSlice");
-                    skip |= method.getName().equals("getSnapshot");
                     skip |= method.getName().equals("getSocket");
                     skip |= method.getName().equals("getSwap");
                     skip |= method.getName().equals("getTarget");
@@ -245,7 +244,6 @@ public class CoverageAnalyzer {
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/init_2escope", "org.freedesktop.systemd1.Scope");
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/cronie_2eservice", "org.freedesktop.systemd1.Service");
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/system_2eslice", "org.freedesktop.systemd1.Slice");
-//        analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/", "org.freedesktop.systemd1.Snapshot");
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/dbus_2esocket", "org.freedesktop.systemd1.Socket");
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/dev_2ddisk_2dby_5cx2duuid_2d2bf012d0_5cx2d4abf_5cx2d4405_5cx2db314_5cx2dfd62d3e94cc3_2eswap", "org.freedesktop.systemd1.Swap");
             analyzePath("org.freedesktop.systemd1", "/org/freedesktop/systemd1/unit/multi_2duser_2etarget", "org.freedesktop.systemd1.Target");
