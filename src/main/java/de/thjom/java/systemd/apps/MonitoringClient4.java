@@ -38,7 +38,7 @@ public class MonitoringClient4 implements Runnable {
             UnitNameMonitor nameMonitor = new UnitNameMonitor(manager);
             nameMonitor.addDefaultHandlers();
             nameMonitor.addUnits(postfix);
-            nameMonitor.addUnits("avahi-daemon.service");
+            nameMonitor.addUnits("bluetooth.service");
             nameMonitor.addUnits("foo.service");
             nameMonitor.addUnits("transient.service");
 

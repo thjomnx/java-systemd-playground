@@ -38,7 +38,6 @@ public class Playground {
 //        System.out.println(manager.getScope("").introspect());
         System.out.println(manager.getService("cronie").introspect());
         System.out.println(manager.getSlice("system").introspect());
-//        System.out.println(manager.getSnapshot("").introspect());
         System.out.println(manager.getSocket("dbus").introspect());
 //        System.out.println(manager.getSwap("").introspect());
         System.out.println(manager.getTarget("basic").introspect());

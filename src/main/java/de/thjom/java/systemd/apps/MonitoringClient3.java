@@ -37,14 +37,15 @@ public class MonitoringClient3 implements Runnable {
                 Manager manager = Systemd.get().getManager();
 
                 UnitNameMonitor nameMonitor = new UnitNameMonitor(manager);
-                nameMonitor.addUnits("cronie.service");
+                nameMonitor.addUnits("cups.service");
                 nameMonitor.addDefaultHandlers();
+                nameMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 while (running) {
-                    Optional<Unit> cronie = nameMonitor.getMonitoredUnit("cronie.service");
+                    Optional<Unit> cups = nameMonitor.getMonitoredUnit("cups.service");
 
-                    if (cronie.isPresent()) {
-                        System.out.format("%s: %s\n", cronie.get(), StateTuple.of(cronie.get()));
+                    if (cups.isPresent()) {
+                        System.out.format("%s: %s\n", cups.get(), StateTuple.of(cups.get()));
                     }
 
                     System.out.println("Press key to stop polling");

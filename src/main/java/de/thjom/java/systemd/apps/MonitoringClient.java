@@ -42,34 +42,24 @@ public class MonitoringClient implements Runnable {
             try {
                 Manager manager = Systemd.get().getManager();
 
-                // 'cronie' monitoring
-                Unit cronie = manager.getService("cronie");
+                // 'cups' monitoring
+                Unit cups = manager.getService("cups");
 
-                cronie.addHandler(PropertiesChanged.class, s -> {
-                    System.out.println("MonitoringClient.run().cronie.addHandler().handle(): " + s);
+                cups.addHandler(PropertiesChanged.class, s -> {
+                    System.out.println("MonitoringClient.run().cups.addHandler().handle(): " + s);
                 });
 
-                cronie.addConsumer(PropertiesChanged.class, s -> {
-                    System.out.println("MonitoringClient.run().cronie.addConsumer().handler(): " + s);
-                });
-
-                cronie.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
+                cups.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 // Unit monitoring based on names
                 UnitNameMonitor miscMonitor = new UnitNameMonitor(manager);
-                miscMonitor.addUnits(cronie);
-                miscMonitor.addUnits("avahi-daemon.service");
+                miscMonitor.addUnits(cups);
+                miscMonitor.addUnits("iwd.service");
                 miscMonitor.addDefaultHandlers();
 
                 miscMonitor.addHandler(PropertiesChanged.class, s -> {
                     if (miscMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
                         System.out.println("MonitoringClient.run().miscMonitor.addHandler().handle(): " + s);
-                    }
-                });
-
-                miscMonitor.addConsumer(PropertiesChanged.class, s -> {
-                    if (miscMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
-                        System.out.println("MonitoringClient.run().miscMonitor.addConsumer().handle(): " + s);
                     }
                 });
 
@@ -83,12 +73,6 @@ public class MonitoringClient implements Runnable {
                 serviceMonitor.addHandler(PropertiesChanged.class, s -> {
                     if (serviceMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
                         System.out.println("MonitoringClient.run().serviceMonitor.addHandler().handle(): " + s);
-                    }
-                });
-
-                serviceMonitor.addConsumer(PropertiesChanged.class, s -> {
-                    if (serviceMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
-                        System.out.println("MonitoringClient.run().serviceMonitor.addConsumer().handle(): " + s);
                     }
                 });
 
@@ -113,7 +97,7 @@ public class MonitoringClient implements Runnable {
                         colsRows[col++][row] = service.getLoadState();
                         colsRows[col++][row] = service.getActiveState();
                         colsRows[col++][row] = service.getSubState();
-                        colsRows[col++][row] = service.getDescription();
+                        colsRows[col][row] = service.getDescription();
                     }
 
                     int[] maxCharsPerColumn = calcMaxColumnChars(colsRows[0], colsRows[1], colsRows[2], colsRows[3], colsRows[4]);

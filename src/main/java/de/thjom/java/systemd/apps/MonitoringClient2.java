@@ -48,19 +48,20 @@ public class MonitoringClient2 implements Runnable {
                 fooMonitor.addUnits("foo.service");
                 fooMonitor.addDefaultHandlers();
 
-                fooMonitor.addConsumer(PropertiesChanged.class, s -> {
+                fooMonitor.addHandler(PropertiesChanged.class, s -> {
                     if (fooMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
-                        System.out.println("MonitoringClient.run().fooMonitor.addConsumer().handle(): " + s);
+                        System.out.println("MonitoringClient.run().fooMonitor.addHandler().handle(): " + s);
                     }
                 });
 
                 UnitTypeMonitor serviceMonitor = new UnitTypeMonitor(manager);
                 serviceMonitor.addMonitoredTypes(MonitoredType.SERVICE);
                 serviceMonitor.addDefaultHandlers();
+                serviceMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, Unit.StateTuple.of(u, p)));
 
-                serviceMonitor.addConsumer(PropertiesChanged.class, s -> {
+                serviceMonitor.addHandler(PropertiesChanged.class, s -> {
                     if (serviceMonitor.monitorsUnit(Unit.extractName(s.getPath()))) {
-                        System.out.println("MonitoringClient.run().serviceMonitor.addConsumer().handle(): " + s);
+                        System.out.println("MonitoringClient.run().serviceMonitor.addHandler().handle(): " + s);
                     }
                 });
 

@@ -27,10 +27,10 @@ public class ConnectionDebugger {
 
                 conn.disconnect();
 
-                Thread.sleep(50);
+//                Thread.sleep(50);
             }
         }
-        catch (final DBusException | InterruptedException e) {
+        catch (final DBusException e) {
             e.printStackTrace();
         }
     }
