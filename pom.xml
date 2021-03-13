@@ -8,7 +8,7 @@
     <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Playground for java-systemd</name>
+    <name>${project.artifactId}</name>
     <description>Playground for java-systemd</description>
     <url>https://github.com/thjomnx/java-systemd-playground</url>
     <inceptionYear>2017</inceptionYear>
