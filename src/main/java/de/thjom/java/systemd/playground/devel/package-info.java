@@ -10,12 +10,12 @@
  */
 
 /**
- * This package provides some classes used for example implementations which
- * make use of the java-systemd project.
+ * This package provides some classes used for development of the java-systemd
+ * project.
  *
  * @see <a href="https://github.com/thjomnx/java-systemd">GitHub project</a>
  * @see <a href="https://www.freedesktop.org/wiki/Software/systemd">systemd</a>
  * @see <a href="https://www.freedesktop.org/wiki/Software/dbus">D-Bus</a>
  */
 
-package de.thjom.java.systemd.apps;
+package de.thjom.java.systemd.playground.devel;

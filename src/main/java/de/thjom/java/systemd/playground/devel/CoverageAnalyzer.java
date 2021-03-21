@@ -9,7 +9,7 @@
  * Full licence texts are included in the COPYING file with this program.
  */
 
-package de.thjom.java.systemd.devel;
+package de.thjom.java.systemd.playground.devel;
 
 import java.io.File;
 import java.io.IOException;

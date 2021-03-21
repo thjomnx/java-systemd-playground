@@ -9,24 +9,24 @@
  * Full licence texts are included in the COPYING file with this program.
  */
 
-package de.thjom.java.systemd.apps;
+package de.thjom.java.systemd.playground.apps;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.freedesktop.dbus.exceptions.DBusException;
 
 import de.thjom.java.systemd.Manager;
 import de.thjom.java.systemd.Systemd;
-import de.thjom.java.systemd.Systemd.InstanceType;
 import de.thjom.java.systemd.Unit;
 import de.thjom.java.systemd.Unit.StateTuple;
 import de.thjom.java.systemd.UnitNameMonitor;
 
-public class MemoryCheck2 implements Runnable {
+public class MonitoringClient3 implements Runnable {
 
     private volatile boolean running;
 
-    public MemoryCheck2() {
+    public MonitoringClient3() {
         this.running = true;
     }
 
@@ -34,31 +34,31 @@ public class MemoryCheck2 implements Runnable {
     public void run() {
         if (running) {
             try {
-                Manager manager = Systemd.get(InstanceType.SYSTEM).getManager();
+                Manager manager = Systemd.get().getManager();
 
-                Unit postfix = manager.getUnit("postfix.service");
-
-                UnitNameMonitor miscMonitor = new UnitNameMonitor(manager);
-                miscMonitor.addUnits(postfix);
-                miscMonitor.addUnits("avahi-daemon.service");   // This one is loaded and running by default (enabled)
-                miscMonitor.addUnits("foo.service");            // This one is loaded by default but not running (disabled)
-                miscMonitor.addUnits("transient.service");      // This one shall pop in and out (not existing)
-                miscMonitor.addDefaultHandlers();
-
-                System.out.println("Press key to stop check");
+                UnitNameMonitor nameMonitor = new UnitNameMonitor(manager);
+                nameMonitor.addUnits("cups.service");
+                nameMonitor.addDefaultHandlers();
+                nameMonitor.addListener((u, p) -> System.out.format("%s changed state to %s\n", u, StateTuple.of(u, p)));
 
                 while (running) {
-                    for (Unit unit : miscMonitor.getMonitoredUnits()) {
-                        System.out.format("%s:\t%s\n", unit.getId(), StateTuple.of(unit));
+                    Optional<Unit> cups = nameMonitor.getMonitoredUnit("cups.service");
+
+                    if (cups.isPresent()) {
+                        System.out.format("%s: %s\n", cups.get(), StateTuple.of(cups.get()));
                     }
 
+                    System.out.println("Press key to stop polling");
+
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(10000);
                     }
                     catch (final InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 }
+
+                nameMonitor.removeDefaultHandlers();
             }
             catch (final DBusException e) {
                 e.printStackTrace();
@@ -70,7 +70,7 @@ public class MemoryCheck2 implements Runnable {
     }
 
     public static void main(final String[] args) {
-        MemoryCheck2 client = new MemoryCheck2();
+        MonitoringClient3 client = new MonitoringClient3();
 
         Thread t = new Thread(client);
         t.start();

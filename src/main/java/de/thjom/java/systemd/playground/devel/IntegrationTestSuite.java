@@ -9,7 +9,7 @@
  * Full licence texts are included in the COPYING file with this program.
  */
 
-package de.thjom.java.systemd.devel;
+package de.thjom.java.systemd.playground.devel;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,6 +29,8 @@ import de.thjom.java.systemd.Swap;
 import de.thjom.java.systemd.Systemd;
 import de.thjom.java.systemd.Target;
 import de.thjom.java.systemd.Timer;
+import de.thjom.java.systemd.types.UnitFileChange;
+import de.thjom.java.systemd.types.UnitFileInstallChange;
 
 public class IntegrationTestSuite {
 
@@ -110,6 +112,18 @@ public class IntegrationTestSuite {
             testUnit(manager.getSwap("dev-disk-by\\x2duuid-2bf012d0\\x2d4abf\\x2d4405\\x2db314\\x2dfd62d3e94cc3"), Swap.class);
             testUnit(manager.getTarget("basic"), Target.class);
             testUnit(manager.getTimer("systemd-tmpfiles-clean"), Timer.class);
+
+            UnitFileChange ufc0 = new UnitFileChange("x", "y", "z");
+            UnitFileInstallChange ufic0 = new UnitFileInstallChange(false, ufc0);
+
+            UnitFileChange ufc1 = new UnitFileChange("a", "b", "c");
+            UnitFileInstallChange ufic1 = new UnitFileInstallChange(false, ufc1);
+
+            System.out.println("ufic0 vs. ufic1: " + ufic0.equals(ufic1));
+            System.out.println(ufic0.toString());
+            System.out.println(ufic0.toFormattedString());
+            System.out.println(ufic1.toString());
+            System.out.println(ufic1.toFormattedString());
         }
         catch (final DBusException | ReflectiveOperationException e) {
             e.printStackTrace();
